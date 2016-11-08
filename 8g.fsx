@@ -38,14 +38,11 @@ let getUserCode (invalidInputString: string)=
         printfn "%s" invalidInputString
         userInput <- System.Console.ReadLine ()
     let mutable (code: code) = []
-    for i = 0 to 3 do
+    for i = userInput.Length - 1  downto 0 do
         code <-(charToCol userInput.[i]) :: code
     code
 
-
-
-
-let getComputerCode =
+let getComputerCode () =
     let intToCol (i: int) =
         match i with
         | 1 -> Red
@@ -57,25 +54,25 @@ let getComputerCode =
         | _ -> Black
     let random = new System.Random()
     let mutable (code: code) = []
+    let mutable rndNum = 0
     for i = 0 to 3 do
-        code <- (intToCol (random.Next(1,6))) :: code
+        rndNum <- random.Next(1,7)
+        code <- (intToCol rndNum) :: code
     code
-
-
 
 let makeCode (player1: player) =
     match player1 with
-    | Computer -> getComputerCode
+    | Computer -> getComputerCode ()
     | Human ->
         printfn "Please input the secret code"
         getUserCode "Please input the secret code"
 
 let guess (player2: player) (gameBoard: board) =
     printfn "Gameboard:"
-    for i = 0 to gameBoard.Length - 1 do
+    for i = gameBoard.Length - 1 downto 0 do
         printfn "%A" gameBoard.[i]
     match player2 with
-    | Computer -> getComputerCode
+    | Computer -> getComputerCode ()
     | Human ->
         printfn "please input your guess"
         getUserCode "please input your guess"
@@ -104,11 +101,42 @@ let getPlayer (i: int) =
     inputToPlayer playerInput
 
 
+let colourCount (code: code) =
+    let array = [|0; 0; 0; 0; 0; 0|]
+    for i = 0 to code.Length - 1 do
+        match code.[i] with
+        | Red -> array.[0] <- (array.[0] + 1)
+        | Green -> array.[1] <- (array.[1] + 1)
+        | Yellow -> array.[2] <- (array.[2] + 1)
+        | Purple -> array.[3] <- (array.[3] + 1)
+        | White -> array.[4] <- (array.[4] + 1)
+        | Black -> array.[5] <- (array.[5] + 1)
+    array
+
+
 let validate (secretCode: code) (playerGuess: code) =
-    ()
+    let mutable whites = 0
+    let mutable blacks = 0
+    let secretColours = colourCount secretCode
+    let guessColours = colourCount playerGuess
+
+    for i = 0 to 5 do
+        if guessColours.[i] <= secretColours.[i] then
+            whites <- whites + guessColours.[i]
+        else
+            whites <- whites + secretColours.[i]
+    for j = 0 to secretCode.Length - 1 do
+        if secretCode.[j] = playerGuess.[j] then
+            blacks <- blacks + 1
+            whites <- whites - 1
+    (blacks, whites)
 
 
-let playGame =
+
+
+
+
+let playGame () =
     let player1 = getPlayer 1
     let player2 = getPlayer 2
     let secretCode = makeCode player1
@@ -116,6 +144,7 @@ let playGame =
     let mutable (playerGuess: code) = []
     let mutable (answer: answer) = (0, 0)
     let mutable counter = 0
+    printfn "%A" secretCode
     while playerGuess <> secretCode do
         playerGuess <- guess player2 gameBoard
         answer <- validate secretCode playerGuess
@@ -125,5 +154,8 @@ let playGame =
     printfn "Congratulations you've won!"
     printfn "you made %d guesses" counter
     printfn "This is your gameboard:"
-    for i = 0 to gameBoard.Length - 1 do
+    for i = gameBoard.Length - 1 downto 0 do
         printfn "%A" gameBoard.[i]
+
+
+playGame ()
