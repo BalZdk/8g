@@ -60,6 +60,9 @@ let getComputerCode () =
         code <- (intToCol rndNum) :: code
     code
 
+let computerAI () =
+    ()
+
 let makeCode (player1: player) =
     match player1 with
     | Computer -> getComputerCode ()
@@ -144,7 +147,7 @@ let playGame () =
     let mutable (playerGuess: code) = []
     let mutable (answer: answer) = (0, 0)
     let mutable counter = 0
-    printfn "%A" secretCode
+    //printfn "%A" secretCode
     while playerGuess <> secretCode do
         playerGuess <- guess player2 gameBoard
         answer <- validate secretCode playerGuess
