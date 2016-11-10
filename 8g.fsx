@@ -45,6 +45,24 @@ let getUserCode (invalidInputString: string)=
 let getComputerCode () =
     let intToCol (i: int) =
         match i with
+        | 0 -> Red
+        | 1 -> Green
+        | 2 -> Yellow
+        | 3 -> Purple
+        | 4-> White
+        | 5 -> Black
+        | _ -> Black
+    let random = new System.Random()
+    let mutable (code: code) = []
+    let mutable rndNum = 0
+    for i = 0 to 3 do
+        rndNum <- random.Next(6)
+        code <- (intToCol rndNum) :: code
+    code
+
+let computerAI (gameBoard: board) =
+    let intToCol (i: int) =
+        match i with
         | 1 -> Red
         | 2 -> Green
         | 3 -> Yellow
@@ -56,12 +74,15 @@ let getComputerCode () =
     let mutable (code: code) = []
     let mutable rndNum = 0
     for i = 0 to 3 do
-        rndNum <- random.Next(1,7)
+        rndNum <- random.Next(6)
         code <- (intToCol rndNum) :: code
+    while (List.filter (fun (x, y) -> x = code) gameBoard).Length > 0 do
+        if (List.filter (fun (x, y) -> x = code) gameBoard).Length > 0 then
+            code <- []
+        for i = 0 to 3 do
+            rndNum <- random.Next(6)
+            code <- (intToCol rndNum) :: code
     code
-
-let computerAI () =
-    ()
 
 let makeCode (player1: player) =
     match player1 with
@@ -71,12 +92,12 @@ let makeCode (player1: player) =
         getUserCode "Please input the secret code"
 
 let guess (player2: player) (gameBoard: board) =
-    printfn "Gameboard:"
-    for i = gameBoard.Length - 1 downto 0 do
-        printfn "%A" gameBoard.[i]
     match player2 with
-    | Computer -> getComputerCode ()
+    | Computer -> computerAI gameBoard
     | Human ->
+        printfn "Gameboard:"
+        for i = gameBoard.Length - 1 downto 0 do
+            printfn "%A" gameBoard.[i]
         printfn "please input your guess"
         getUserCode "please input your guess"
 
@@ -147,11 +168,11 @@ let playGame () =
     let mutable (playerGuess: code) = []
     let mutable (answer: answer) = (0, 0)
     let mutable counter = 0
-    //printfn "%A" secretCode
     while playerGuess <> secretCode do
         playerGuess <- guess player2 gameBoard
         answer <- validate secretCode playerGuess
-        printfn "%A" answer
+        if player2 = Human then
+            printfn "%A (B/W)" answer
         gameBoard <- (playerGuess, answer) :: gameBoard
         counter <- counter + 1
     printfn "Congratulations you've won!"
