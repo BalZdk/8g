@@ -95,9 +95,10 @@ let guess (player2: player) (gameBoard: board) =
     match player2 with
     | Computer -> computerAI gameBoard
     | Human ->
-        printfn "Gameboard:"
+        printfn "Gameboard: "
         for i = gameBoard.Length - 1 downto 0 do
             printfn "%A" gameBoard.[i]
+        printfn ""
         printfn "please input your guess"
         getUserCode "please input your guess"
 
@@ -163,18 +164,21 @@ let validate (secretCode: code) (playerGuess: code) =
 let playGame () =
     let player1 = getPlayer 1
     let player2 = getPlayer 2
+    printfn ""
     let secretCode = makeCode player1
     let mutable (gameBoard: board) = []
     let mutable (playerGuess: code) = []
     let mutable (answer: answer) = (0, 0)
     let mutable counter = 0
     while playerGuess <> secretCode do
+        printfn ""
         playerGuess <- guess player2 gameBoard
         answer <- validate secretCode playerGuess
         if player2 = Human then
-            printfn "%A (B/W)" answer
+            printfn "Answer: %A (B/W)" answer
         gameBoard <- (playerGuess, answer) :: gameBoard
         counter <- counter + 1
+    printfn ""
     printfn "Congratulations you've won!"
     printfn "you made %d guesses" counter
     printfn "This is your gameboard:"
