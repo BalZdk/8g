@@ -56,11 +56,11 @@ let getUserCode (invalidInputString: string)=
         | 'B' -> Black
         |  _  -> Black
 
-    let mutable userInput = System.Console.ReadLine ()
+    let mutable userInput = System.Console.ReadLine().ToUpper()
     while not (validateUserCode userInput) do
         printfn "Invalid Input"
         printfn "%s" invalidInputString
-        userInput <- System.Console.ReadLine ()
+        userInput <- System.Console.ReadLine().ToUpper()
     let mutable (code: code) = []
     for i = userInput.Length - 1  downto 0 do
         code <-(charToCol userInput.[i]) :: code
@@ -211,11 +211,11 @@ let getPlayer (i: int) =
         |  _  -> Computer
 
     printfn "please input player %d (C/H): " i
-    let mutable playerInput  = System.Console.ReadLine ()
+    let mutable playerInput  = System.Console.ReadLine().ToUpper()
     while not (validatePlayerInput playerInput) do
         printfn "Invalid Input"
         printfn "Please input player %d (C/H): " i
-        playerInput <- System.Console.ReadLine ()
+        playerInput <- System.Console.ReadLine().ToUpper()
     inputToPlayer playerInput
 
 
