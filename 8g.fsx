@@ -5,7 +5,20 @@ type answer = int * int
 type board = ( code * answer ) list
 type player = Human | Computer
 
-
+///<summary>
+/// This function is given a string and returns true if the string is a "valid" input
+/// according to the rules of the game.
+///</summary>
+///<param name = "userInput">
+/// A string that is checked according to game rules.
+///</param>
+///<remarks>
+/// valid inputs are: strings of length 4 where each character is either R,G,Y,P,W or B
+///</remarks>
+///<returns>
+/// This function returns true if the given string is valid according to the game rules
+/// and returns false otherwise.
+///</returns>
 let validateUserCode (userInput: string) =
     let validateColour (userColour: char) =
         match userColour with
@@ -21,6 +34,17 @@ let validateUserCode (userInput: string) =
 
 
 
+///<summary>
+/// This function asks the user for input, then chekecs if the input is valid.
+/// if it isn't valid it'll ask for a new input, otherwise it'll turn the input
+/// into a variable of type code.
+///</summary>
+///<param name = "invalidInputString">
+/// A string which is printed if the input string is invalid.
+///</param>
+///<returns>
+/// This function returns a code created based on user input.
+///</returns>
 let getUserCode (invalidInputString: string)=
     let charToCol (inputColour: char) =
         match inputColour with
@@ -42,6 +66,14 @@ let getUserCode (invalidInputString: string)=
         code <-(charToCol userInput.[i]) :: code
     code
 
+
+
+///<summary>
+/// This function generates a random code.
+///</summary>
+///<returns>
+/// This function returns a randomly generated code.
+///</returns>
 let getComputerCode () =
     let intToCol (i: int) =
         match i with
@@ -60,30 +92,42 @@ let getComputerCode () =
         code <- (intToCol rndNum) :: code
     code
 
+
+
+
+///<summary>
+/// This function calls getComputerCode to get a random code.
+/// if the generated code is in the given gameBoard then it calles
+/// getComputerCode to get a new code, then repeats untill it has a
+/// code that isn't in the gameboard.
+///</summary>
+///<param name = "gameBoard">
+/// a variable of type board that is used to check if the generated code
+/// has been used before.
+///</param>
+///<returns>
+/// This function returns a code that isn't in the gameBoard argument.
+///</returns>
 let computerAI (gameBoard: board) =
-    let intToCol (i: int) =
-        match i with
-        | 1 -> Red
-        | 2 -> Green
-        | 3 -> Yellow
-        | 4 -> Purple
-        | 5 -> White
-        | 6 -> Black
-        | _ -> Black
-    let random = new System.Random()
-    let mutable (code: code) = []
-    let mutable rndNum = 0
-    for i = 0 to 3 do
-        rndNum <- random.Next(6)
-        code <- (intToCol rndNum) :: code
+    let mutable code = getComputerCode ()
     while (List.filter (fun (x, y) -> x = code) gameBoard).Length > 0 do
-        if (List.filter (fun (x, y) -> x = code) gameBoard).Length > 0 then
-            code <- []
-        for i = 0 to 3 do
-            rndNum <- random.Next(6)
-            code <- (intToCol rndNum) :: code
+        code <- getComputerCode ()
     code
 
+
+
+
+///<summary>
+/// This function uses get ComputerCode to generate a random code
+/// if the given player is a Computer, if the given player is Human.
+/// then it'll ask for an input and then calls getUserCode
+///</summary>
+///<param name = "player1">
+/// This variable of type player decides how the returned code is generated.
+///</param>
+///<returns>
+/// This function returns a variable of type code.
+///</returns>
 let makeCode (player1: player) =
     match player1 with
     | Computer -> getComputerCode ()
@@ -91,6 +135,23 @@ let makeCode (player1: player) =
         printfn "Please input the secret code"
         getUserCode "Please input the secret code"
 
+
+
+
+///<summary>
+///This function is given a player type and a gameboard,
+/// and returns a code.
+///</summary>
+///<param name = "player2">
+/// This player type decides how the returned code is generated.
+///</param>
+///<param name = "gameBoard">
+/// This board is printed if the player type is Human,
+/// ro is given to computerAI if the player type is Computer.
+///</param>
+///<returns>
+/// This function returns a variable of type code.
+///</returns>
 let guess (player2: player) (gameBoard: board) =
     match player2 with
     | Computer -> computerAI gameBoard
@@ -103,6 +164,21 @@ let guess (player2: player) (gameBoard: board) =
         getUserCode "please input your guess"
 
 
+
+
+
+///<summary>
+/// This function returns true if the given string is "valid".
+///</summary>
+///<param name = "playerType">
+/// This variable is tested for it's "validity"
+///</param>
+///<remarks>
+/// The given string is valid if the given string is either "C" or "H"
+///</remarks>
+///<returns>
+/// This function returns a type Boolean.
+///</returns>
 let validatePlayerInput (playerType: string) =
     match playerType with
     | "H" -> true
@@ -110,6 +186,23 @@ let validatePlayerInput (playerType: string) =
     |  _  -> false
 
 
+
+
+
+///<summary>
+/// This function asks for user input, and returns the given input
+/// as type player.
+///</summary>
+///<param name = "i">
+/// This variable is used to ask for appropriate player number.
+///</param>
+///<remarks>
+/// This function uses the validatePlayerInput function to check the
+/// "validity" of the input.
+///</remarks>
+///<returns>
+/// This function returns type player, according to the input.
+///</returns>
 let getPlayer (i: int) =
     let inputToPlayer (input: string) =
         match input with
@@ -126,6 +219,21 @@ let getPlayer (i: int) =
     inputToPlayer playerInput
 
 
+
+
+
+///<summary>
+///
+///</summary>
+///<param name = "x">
+///
+///</param>
+///<remarks>
+///
+///</remarks>
+///<returns>
+///
+///</returns>
 let colourCount (code: code) =
     let array = [|0; 0; 0; 0; 0; 0|]
     for i = 0 to code.Length - 1 do
@@ -139,6 +247,21 @@ let colourCount (code: code) =
     array
 
 
+
+
+
+///<summary>
+///
+///</summary>
+///<param name = "x">
+///
+///</param>
+///<remarks>
+///
+///</remarks>
+///<returns>
+///
+///</returns>
 let validate (secretCode: code) (playerGuess: code) =
     let mutable whites = 0
     let mutable blacks = 0
@@ -161,6 +284,18 @@ let validate (secretCode: code) (playerGuess: code) =
 
 
 
+///<summary>
+///
+///</summary>
+///<param name = "x">
+///
+///</param>
+///<remarks>
+///
+///</remarks>
+///<returns>
+///
+///</returns>
 let playGame () =
     let player1 = getPlayer 1
     let player2 = getPlayer 2
@@ -171,7 +306,6 @@ let playGame () =
     let mutable (answer: answer) = (0, 0)
     let mutable counter = 0
     while playerGuess <> secretCode do
-        printfn ""
         playerGuess <- guess player2 gameBoard
         answer <- validate secretCode playerGuess
         if player2 = Human then
@@ -186,4 +320,86 @@ let playGame () =
         printfn "%A" gameBoard.[i]
 
 
+
+///<summary>
+///
+///</summary>
+///<param name = "x">
+///
+///</param>
+///<remarks>
+///
+///</remarks>
+///<returns>
+///
+///</returns>
+let blackBoxTesting () =
+    printfn "          ValidateUserCode:"
+    printfn "test1: %b" (validateUserCode "XRGB" = false)
+    printfn "test2: %b" (validateUserCode "RGYP" = true)
+    printfn "test3: %b" (validateUserCode "RRRRR" = false)
+    printfn "test4: %b" (validateUserCode "RG1R" = false)
+
+    printfn "          getUserCode:"
+    printfn "test1: %b" (false)
+    printfn "test2: %b" (false)
+    printfn "test3: %b" (false)
+    printfn "test4: %b" (false)
+
+    printfn "          getComputerCode:"
+    printfn "test1: %b" (false)
+    printfn "test2: %b" (false)
+    printfn "test3: %b" (false)
+    printfn "test4: %b" (false)
+
+    printfn "          computerAI:"
+    printfn "test1: %b" (false)
+    printfn "test2: %b" (false)
+    printfn "test3: %b" (false)
+    printfn "test4: %b" (false)
+
+    printfn "          makeCode:"
+    printfn "test1: %b" (false)
+    printfn "test2: %b" (false)
+    printfn "test3: %b" (false)
+    printfn "test4: %b" (false)
+
+    printfn "          guess:"
+    printfn "test1: %b" (false)
+    printfn "test2: %b" (false)
+    printfn "test3: %b" (false)
+    printfn "test4: %b" (false)
+
+    printfn "          validatePlayerInput:"
+    printfn "test1: %b" (validatePlayerInput "cat" = false)
+    printfn "test2: %b" (validatePlayerInput "C" = true)
+    printfn "test3: %b" (validatePlayerInput "H" = true)
+    printfn "test4: %b" (validatePlayerInput "c" = false)
+
+    printfn "          getPlayer:"
+    printfn "test1: %b" (false)
+    printfn "test2: %b" (false)
+    printfn "test3: %b" (false)
+    printfn "test4: %b" (false)
+
+    printfn "          colourCount:"
+    printfn "test1: %b" (colourCount [Red; Green; Yellow; Green] = [|1; 2; 1; 0; 0; 0|])
+    printfn "test2: %b" (colourCount [Red; Red; Red; Red; Red; Red] = [|6; 0; 0; 0; 0; 0|])
+    printfn "test3: %b" (colourCount [White; White; Black; Black] = [|0; 0; 0; 0; 2; 2|])
+    printfn "test4: %b" (colourCount [Red; Green; Yellow; Purple] = [|1; 1; 1; 1; 0; 0|])
+    printfn "          validate:"
+    printfn "test1: %b" (validate [Red; Red; Green; Black] [Red; Green; Yellow; Black] = (2, 1))
+    printfn "test2: %b" (validate [Red; Red; Red; Red] [Green; Yellow; Black; White] = (0, 0))
+    printfn "test3: %b" (validate [Black; Yellow; White; Purple] [Yellow; White; Purple; Black] = (0, 4))
+    printfn "test4: %b" (validate [Black; White; Green; Yellow] [Black; White; Red; Purple] = (2, 0))
+
+    printfn "          playGame: "
+    printfn "test1: %b" (false)
+    printfn "test2: %b" (false)
+    printfn "test3: %b" (false)
+    printfn "test4: %b" (false)
+
+
+
 playGame ()
+blackBoxTesting ()
