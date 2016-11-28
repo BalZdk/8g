@@ -42,6 +42,9 @@ let validateUserCode (userInput: string) =
 ///<param name = "invalidInputString">
 /// A string which is printed if the input string is invalid.
 ///</param>
+///<remarks>
+/// This function turns all inputs in to uppercase letters,
+/// thus allowing the user to write lowercase without the program calling errors.
 ///<returns>
 /// This function returns a code created based on user input.
 ///</returns>
@@ -197,8 +200,7 @@ let validatePlayerInput (playerType: string) =
 /// This variable is used to ask for appropriate player number.
 ///</param>
 ///<remarks>
-/// This function uses the validatePlayerInput function to check the
-/// "validity" of the input.
+/// This function turns all inputs into uppercase, such that the user can write in lowercase without errors.
 ///</remarks>
 ///<returns>
 /// This function returns type player, according to the input.
@@ -223,16 +225,16 @@ let getPlayer (i: int) =
 
 
 ///<summary>
-///
+/// This function takes a code and counts how many there are of each colour
+/// and saves that number in an array,
+/// such that for each red colour the first number of the array goes up by 1.
 ///</summary>
-///<param name = "x">
-///
+///<param name = "code">
+/// This is the code where the function counts how many there are of each colour.
 ///</param>
-///<remarks>
-///
-///</remarks>
 ///<returns>
-///
+/// This function returns an array that has information which
+/// tells how many there are of each colour.
 ///</returns>
 let colourCount (code: code) =
     let array = [|0; 0; 0; 0; 0; 0|]
@@ -251,16 +253,20 @@ let colourCount (code: code) =
 
 
 ///<summary>
-///
+/// This function is given two codes, it then compares them and returns
+/// a tuple describing how many colours are the same across the codes
+/// and how many are in the exact same spot.
+/// (The answer is of the same design as the mastermind boardgame.)
 ///</summary>
-///<param name = "x">
-///
+///<param name = "secretCode">
+/// This is the "hidden" code in mastermind and is one of the two codes that shall be compared.
 ///</param>
-///<remarks>
-///
-///</remarks>
+///<param name = "playerGuess">
+/// This is the guess done by player2 in mastermind, and is compared to secretCode.
+///</param>
 ///<returns>
-///
+/// This function returns a tuple of two ints, which give information
+/// as to how accurate the guess was.
 ///</returns>
 let validate (secretCode: code) (playerGuess: code) =
     let mutable whites = 0
@@ -285,16 +291,11 @@ let validate (secretCode: code) (playerGuess: code) =
 
 
 ///<summary>
-///
+/// This function runs the primary game loop and
+/// and calls the above functions in the right order and right context.
 ///</summary>
-///<param name = "x">
-///
-///</param>
-///<remarks>
-///
-///</remarks>
 ///<returns>
-///
+/// This function returns nothing but just starts a loop that goes untill player 2 has won.
 ///</returns>
 let playGame () =
     let player1 = getPlayer 1
@@ -306,6 +307,8 @@ let playGame () =
     let mutable (answer: answer) = (0, 0)
     let mutable counter = 0
     while playerGuess <> secretCode do
+        if player2 = Human then
+            System.Console.Clear()
         playerGuess <- guess player2 gameBoard
         answer <- validate secretCode playerGuess
         if player2 = Human then
@@ -321,18 +324,6 @@ let playGame () =
 
 
 
-///<summary>
-///
-///</summary>
-///<param name = "x">
-///
-///</param>
-///<remarks>
-///
-///</remarks>
-///<returns>
-///
-///</returns>
 let blackBoxTesting () =
     printfn "          ValidateUserCode:"
     printfn "test1: %b" (validateUserCode "XRGB" = false)
@@ -340,47 +331,11 @@ let blackBoxTesting () =
     printfn "test3: %b" (validateUserCode "RRRRR" = false)
     printfn "test4: %b" (validateUserCode "RG1R" = false)
 
-    printfn "          getUserCode:"
-    printfn "test1: %b" (false)
-    printfn "test2: %b" (false)
-    printfn "test3: %b" (false)
-    printfn "test4: %b" (false)
-
-    printfn "          getComputerCode:"
-    printfn "test1: %b" (false)
-    printfn "test2: %b" (false)
-    printfn "test3: %b" (false)
-    printfn "test4: %b" (false)
-
-    printfn "          computerAI:"
-    printfn "test1: %b" (false)
-    printfn "test2: %b" (false)
-    printfn "test3: %b" (false)
-    printfn "test4: %b" (false)
-
-    printfn "          makeCode:"
-    printfn "test1: %b" (false)
-    printfn "test2: %b" (false)
-    printfn "test3: %b" (false)
-    printfn "test4: %b" (false)
-
-    printfn "          guess:"
-    printfn "test1: %b" (false)
-    printfn "test2: %b" (false)
-    printfn "test3: %b" (false)
-    printfn "test4: %b" (false)
-
     printfn "          validatePlayerInput:"
     printfn "test1: %b" (validatePlayerInput "cat" = false)
     printfn "test2: %b" (validatePlayerInput "C" = true)
     printfn "test3: %b" (validatePlayerInput "H" = true)
     printfn "test4: %b" (validatePlayerInput "c" = false)
-
-    printfn "          getPlayer:"
-    printfn "test1: %b" (false)
-    printfn "test2: %b" (false)
-    printfn "test3: %b" (false)
-    printfn "test4: %b" (false)
 
     printfn "          colourCount:"
     printfn "test1: %b" (colourCount [Red; Green; Yellow; Green] = [|1; 2; 1; 0; 0; 0|])
@@ -392,12 +347,6 @@ let blackBoxTesting () =
     printfn "test2: %b" (validate [Red; Red; Red; Red] [Green; Yellow; Black; White] = (0, 0))
     printfn "test3: %b" (validate [Black; Yellow; White; Purple] [Yellow; White; Purple; Black] = (0, 4))
     printfn "test4: %b" (validate [Black; White; Green; Yellow] [Black; White; Red; Purple] = (2, 0))
-
-    printfn "          playGame: "
-    printfn "test1: %b" (false)
-    printfn "test2: %b" (false)
-    printfn "test3: %b" (false)
-    printfn "test4: %b" (false)
 
 
 
