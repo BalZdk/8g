@@ -5,6 +5,8 @@ type answer = int * int
 type board = ( code * answer ) list
 type player = Human | Computer
 
+
+let random = new System.Random()
 ///<summary>
 /// This function is given a string and returns true if the string is a "valid" input
 /// according to the rules of the game.
@@ -90,7 +92,6 @@ let getComputerCode () =
         | 4-> White
         | 5 -> Black
         | _ -> Black
-    let random = new System.Random()
     let mutable (code: code) = []
     let mutable rndNum = 0
     for i = 0 to 3 do
@@ -170,8 +171,8 @@ let guess (player2: player) (gameBoard: board) =
         for i = gameBoard.Length - 1 downto 0 do
             printfn "%A" gameBoard.[i]
         printfn ""
-        printfn "please input your guess"
-        getUserCode "please input your guess"
+        printfn "Please input your guess"
+        getUserCode "Please input your guess"
 
 
 
@@ -219,7 +220,7 @@ let getPlayer (i: int) =
         | "H" -> Human
         |  _  -> Computer
 
-    printfn "please input player %d (C/H): " i
+    printfn "Please input player %d (C/H): " i
     let mutable playerInput  = System.Console.ReadLine().ToUpper()
     while not (validatePlayerInput playerInput) do
         printfn "Invalid Input"
@@ -293,9 +294,42 @@ let validate (secretCode: code) (playerGuess: code) =
     (blacks, whites)
 
 
+///<summary>
+/// It beeps!
+///</summary>
+///<returns>
+/// A beep
+///</returns>
 
+let beep freq dur =
+    System.Console.Beep(freq, dur)
 
+let march =
+    beep 440 500
+    beep 440 500
+    beep 440 500
+    beep 349 350
+    beep 523 150
+    beep 440 500
+    beep 349 350
+    beep 523 150
+    beep 440 1000
 
+///<summary>
+/// Purty title card
+///</summary>
+///<returns>
+/// You get NOTHING! You LOSE! Good day, sir!
+///</returns>
+let splash =
+    "
+        /|    /| ----------
+       / |   / | a s t e r
+      /  |  /  |
+     /   | /   | i n d
+    /    |/    | ----------
+
+    "
 
 ///<summary>
 /// This function runs the primary game loop and
@@ -305,6 +339,8 @@ let validate (secretCode: code) (playerGuess: code) =
 /// This function returns nothing but just starts a loop that goes untill player 2 has won.
 ///</returns>
 let playGame () =
+    printfn "%s" splash
+    march
     let player1 = getPlayer 1
     let player2 = getPlayer 2
     printfn ""
@@ -321,8 +357,8 @@ let playGame () =
         gameBoard <- (playerGuess, answer) :: gameBoard
         counter <- counter + 1
     printfn ""
-    printfn "Congratulations you've won!"
-    printfn "you made %d guesses" counter
+    printfn "Congratulation! A winner is you!"
+    printfn "You made %d guesses" counter
     printfn "This is your gameboard:"
     for i = gameBoard.Length - 1 downto 0 do
         printfn "%A" gameBoard.[i]
