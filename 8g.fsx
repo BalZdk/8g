@@ -74,6 +74,9 @@ let getUserCode (invalidInputString: string)=
 ///<summary>
 /// This function generates a random code.
 ///</summary>
+///<remarks>
+/// When matching in inToCol we match with _ and return black, however intToCol is never called with a number above 5 and therefore it doesn't make a difference.
+///</remarks>
 ///<returns>
 /// This function returns a randomly generated code.
 ///</returns>
@@ -152,6 +155,10 @@ let makeCode (player1: player) =
 /// This board is printed if the player type is Human,
 /// ro is given to computerAI if the player type is Computer.
 ///</param>
+///<remarks>
+/// The for-loop counts downto such that the last element is printed at the bottom of the screen.
+/// Thus making it easier for the user when playing
+///</remarks>
 ///<returns>
 /// This function returns a variable of type code.
 ///</returns>
@@ -311,8 +318,6 @@ let playGame () =
             System.Console.Clear()
         playerGuess <- guess player2 gameBoard
         answer <- validate secretCode playerGuess
-        if player2 = Human then
-            printfn "Answer: %A (B/W)" answer
         gameBoard <- (playerGuess, answer) :: gameBoard
         counter <- counter + 1
     printfn ""
