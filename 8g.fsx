@@ -5,6 +5,8 @@ type answer = int * int
 type board = ( code * answer ) list
 type player = Human | Computer
 
+
+let random = new System.Random()
 ///<summary>
 /// This function is given a string and returns true if the string is a "valid" input
 /// according to the rules of the game.
@@ -87,7 +89,6 @@ let getComputerCode () =
         | 4-> White
         | 5 -> Black
         | _ -> Black
-    let random = new System.Random()
     let mutable (code: code) = []
     let mutable rndNum = 0
     for i = 0 to 3 do
