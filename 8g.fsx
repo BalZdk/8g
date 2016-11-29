@@ -287,6 +287,26 @@ let validate (secretCode: code) (playerGuess: code) =
     (blacks, whites)
 
 
+///<summary>
+/// It beeps!
+///</summary>
+///<returns>
+/// A beep
+///</returns>
+
+let beep freq dur =
+    System.Console.Beep(freq, dur)
+
+let march =
+    beep 440 500
+    beep 440 500
+    beep 440 500
+    beep 349 350
+    beep 523 150
+    beep 440 500
+    beep 349 350
+    beep 523 150
+    beep 440 1000
 
 ///<summary>
 /// Purty title card
@@ -313,7 +333,7 @@ let splash =
 ///</returns>
 let playGame () =
     printfn "%s" splash
-    System.Console.Beep(666,1000)
+    march
     let player1 = getPlayer 1
     let player2 = getPlayer 2
     printfn ""
