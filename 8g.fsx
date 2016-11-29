@@ -352,7 +352,7 @@ let playGame () =
         gameBoard <- (playerGuess, answer) :: gameBoard
         counter <- counter + 1
     printfn ""
-    printfn "Congratulations! A winner is you!"
+    printfn "Congratulation! A winner is you!"
     printfn "You made %d guesses" counter
     printfn "This is your gameboard:"
     for i = gameBoard.Length - 1 downto 0 do
